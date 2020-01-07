@@ -30,12 +30,18 @@ class NoticiaRepository(
         return liveData
     }
 
-    fun salva(
-        noticia: Noticia,
-        quandoSucesso: (noticiaNova: Noticia) -> Unit,
-        quandoFalha: (erro: String?) -> Unit
-    ) {
-        salvaNaApi(noticia, quandoSucesso, quandoFalha)
+    fun salva(noticia: Noticia): LiveData<Resource<Void?>> {
+        val liveData = MutableLiveData<Resource<Void?>>()
+        salvaNaApi(
+            noticia,
+            quandoSucesso = {
+                liveData.value = Resource(dado = null)
+            },
+            quandoFalha = {
+                liveData.value = Resource(dado = null, erro = it)
+            }
+        )
+        return liveData
     }
 
     fun remove(
@@ -46,22 +52,32 @@ class NoticiaRepository(
         removeNaApi(noticia, quandoSucesso, quandoFalha)
     }
 
-    fun edita(
-        noticia: Noticia,
-        quandoSucesso: (noticiaEditada: Noticia) -> Unit,
-        quandoFalha: (erro: String?) -> Unit
-    ) {
-        editaNaApi(noticia, quandoSucesso, quandoFalha)
+    fun edita(noticia: Noticia): LiveData<Resource<Void?>> {
+        val liveData = MutableLiveData<Resource<Void?>>()
+        editaNaApi(
+            noticia,
+            quandoSucesso = {
+                liveData.value = Resource(dado = null)
+            },
+            quandoFalha = {
+                liveData.value = Resource(dado = null, erro = it)
+            }
+        )
+        return liveData
     }
 
-    fun buscaPorId(
-        noticiaId: Long,
-        quandoSucesso: (noticiaEncontrada: Noticia?) -> Unit
-    ) {
-        BaseAsyncTask(quandoExecuta = {
-            dao.buscaPorId(noticiaId)
-        }, quandoFinaliza = quandoSucesso)
+    fun buscaPorId(noticiaId: Long) : LiveData<Noticia>{
+        val liveData = MutableLiveData<Noticia>()
+        BaseAsyncTask(
+            quandoExecuta = {
+                dao.buscaPorId(noticiaId)
+            },
+            quandoFinaliza = {
+                liveData.value = it
+            })
             .execute()
+
+        return liveData
     }
 
     private fun buscaNaApi(
