@@ -6,9 +6,10 @@ import br.com.alura.technews.repository.NoticiaRepository
 import br.com.alura.technews.ui.viewmodel.VisualizaNoticiaViewModel
 
 class VisualizaNoticiaViewModelFactory(
-    private val repository: NoticiaRepository
+    private val repository: NoticiaRepository,
+    private val noticiaId: Long
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return VisualizaNoticiaViewModel(repository) as T
+        return VisualizaNoticiaViewModel(repository, noticiaId) as T
     }
 }

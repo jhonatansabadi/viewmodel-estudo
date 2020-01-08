@@ -1,4 +1,3 @@
-
 package br.com.alura.technews.ui.activity
 
 import android.content.Intent
@@ -31,7 +30,7 @@ class VisualizaNoticiaActivity : AppCompatActivity() {
     }
 
     private val viewModel by lazy {
-        val provedor = VisualizaNoticiaViewModelFactory(repository)
+        val provedor = VisualizaNoticiaViewModelFactory(repository, noticiaId)
         ViewModelProviders.of(this, provedor).get(VisualizaNoticiaViewModel::class.java)
     }
 
@@ -63,8 +62,8 @@ class VisualizaNoticiaActivity : AppCompatActivity() {
     }
 
     private fun buscaNoticiaSelecionada() {
-        viewModel.buscaPorId(noticiaId).observe(this, Observer {
-            it.dado?.let {
+        viewModel.buscaPorId().observe(this, Observer {
+            it.let {
                 this.noticia = it
                 preencheCampos(it)
             }
@@ -84,13 +83,16 @@ class VisualizaNoticiaActivity : AppCompatActivity() {
     }
 
     private fun remove() {
-        if (::noticia.isInitialized) {
-            repository.remove(noticia, quandoSucesso = {
-                finish()
-            }, quandoFalha = {
-                mostraErro(MENSAGEM_FALHA_REMOCAO)
-            })
-        }
+        viewModel.remove().observe(this, Observer {
+            when (it.erro) {
+                null -> {
+                    finish()
+                }
+                else -> {
+                    mostraErro(MENSAGEM_FALHA_REMOCAO)
+                }
+            }
+        })
     }
 
     private fun abreFormularioEdicao() {
