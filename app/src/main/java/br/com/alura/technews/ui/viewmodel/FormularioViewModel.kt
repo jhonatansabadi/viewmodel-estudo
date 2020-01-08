@@ -19,7 +19,7 @@ class FormularioViewModel(
         }
     }
 
-    fun buscarPorId() : LiveData<Noticia>{
+    fun buscarPorId() : LiveData<Noticia?>{
         return repository.buscaPorId(noticiaId)
     }
 }

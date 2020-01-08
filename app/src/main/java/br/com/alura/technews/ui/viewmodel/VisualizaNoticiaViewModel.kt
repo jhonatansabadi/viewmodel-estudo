@@ -14,7 +14,7 @@ class VisualizaNoticiaViewModel(
 
     private val noticiaEncontrada = buscaPorId()
 
-    fun buscaPorId(): LiveData<Noticia> {
+    fun buscaPorId(): LiveData<Noticia?> {
         return repository.buscaPorId(noticiaId)
     }
 
